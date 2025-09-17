@@ -1,0 +1,216 @@
+.navbar {
+    padding: 0 !important;
+}
+
+body {
+    background-color: #babec2 !important
+}
+
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+    font-size: 12px;
+}
+
+.btn-primary {
+    font-size: 12px !important;
+    background: #1e1e2f !important;
+    border: none !important;
+}
+
+.bg-add {
+    background-color: #6e6eae;
+}
+
+.table>:not(caption)>*>* {
+    padding: 5px 0 !important;
+}
+
+.navbar {
+    background-color: #1e1e2f;
+    border-bottom: 1px solid #ffffff63;
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #1e1e2f;
+    padding: 1rem;
+    transition: width 0.3s ease;
+    overflow-x: hidden;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.toggle-btn {
+    font-size: 1rem;
+    padding: 0.3rem 0.6rem;
+}
+
+/* src/components/Sidebar.css */
+.sidebar {
+    background-color: #1e1e2f;
+    width: 220px;
+    height: 100%;
+    transition: width 0.3s;
+    padding: 1rem;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-link {
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.4rem;
+    transition: background-color 0.2s;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.dropdown-menu {
+    background: #dedede !important;
+}
+
+.dropdown-menu li {
+    /* border-bottom: 1px solid #adadad; */
+    border-radius: 5px;
+    box-shadow: rgb(0 0 0 / 16%) 0px 3px 8px;
+}
+
+.dropdown-menu.show {
+    padding: 0;
+}
+
+.dropdown-toggle {
+    font-size: 12px !important;
+}
+
+.dropdown-menu button {
+    font-size: 12px;
+}
+
+.open-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #007bff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* background dim */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: left;
+}
+
+.popup h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.popup input {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.popup button[type="submit"] {
+    background: #28a745;
+    color: white;
+    padding: 4px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.statusbtn {
+    font-size: 12px !important;
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.statusbtnEdit {
+    font-size: 12px !important;
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: #fff !important;
+    border: none !important;
+    background: #313149 !important;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.popup button[type="submit"]:hover {
+    background: #218838;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-btn:hover {
+    color: black;
+}
