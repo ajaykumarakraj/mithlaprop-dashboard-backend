@@ -168,6 +168,15 @@ tr {
     border: 1px solid #ccc;
 }
 
+.popup select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
 .popup button[type="submit"] {
     background: #28a745;
     color: white;

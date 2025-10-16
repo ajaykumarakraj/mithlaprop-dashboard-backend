@@ -10,7 +10,7 @@ const AmenitiesType = () => {
     const [amenities, setAmenities] = useState([])
     const [updateAmenities, setUpdateAmenities] = useState("")
     const [editId, setEditId] = useState("")
-    const [btnStatus, setBtnStatus] = useState(0)
+    const [btnStatus, setBtnStatus] = useState(1)
 
     const openPopup = () => setShowPopup(true);
     const closePopup = () => setShowPopup(false);

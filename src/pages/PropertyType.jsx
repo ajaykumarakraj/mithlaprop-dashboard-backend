@@ -10,17 +10,20 @@ const PropertyType = () => {
     const [property, setProperty] = useState([])
     const [updateProperty, setUpdateProperty] = useState("")
     const [editId, setEditId] = useState("")
-    const [btnStatus, setBtnStatus] = useState(0)
+    const [propertystatus, setPropertystatus] = useState("")
+
+
+    const [btnStatus, setBtnStatus] = useState(1)
 
     const openPopup = () => setShowPopup(true);
     const closePopup = () => setShowPopup(false);
 
     const handlestatus = (e) => {
-        console.log(e.target.value)
+        console.log(e.target.value, "check value")
         if (e.target.value == 0) {
-            setBtnStatus(1)
+            setPropertystatus(1)
         } else {
-            setBtnStatus(0)
+            setPropertystatus(0)
         }
     }
 
@@ -71,6 +74,7 @@ const PropertyType = () => {
             })
             if (response.data.status) {
                 setProperty(response.data.data)
+                console.log("getid", response.data.data)
             }
         } catch (error) {
             console.log("get data", error)
@@ -90,8 +94,9 @@ const PropertyType = () => {
                 }
             })
             if (res.data.status) {
-                console.log(res.data.data.type_name, "check value")
+                console.log(res.data.data.status, "check value")
                 setEditProperty(res.data.data.type_name)
+                setPropertystatus(res.data.data.status)
             }
         } catch (error) {
             console.log("edit api ", error)
@@ -108,7 +113,7 @@ const PropertyType = () => {
         const payload = {
             id: editId,
             type_name: updateProperty || editProperty,
-            status: btnStatus
+            status: propertystatus
         }
         console.log(payload, "payload")
         try {
@@ -155,7 +160,7 @@ const PropertyType = () => {
                                 />
                                 <div className="d-flex justify-content-between">
                                     <button type="submit" className="btn ">{editId ? "Update" : "Submit"}</button>
-                                    {editId ? <button type="button" className="btn btn-primary" value={btnStatus} onClick={handlestatus} >{btnStatus == 0 ? "In Active" : "Active"}</button> : ""}
+                                    {editId ? <button type="button" className="btn btn-primary" value={propertystatus} onClick={handlestatus} >{propertystatus == 0 ? "In Active" : "Active"}</button> : ""}
                                 </div>
                             </form>
                         </div>
