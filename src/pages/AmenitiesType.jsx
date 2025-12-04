@@ -11,16 +11,16 @@ const AmenitiesType = () => {
     const [updateAmenities, setUpdateAmenities] = useState("")
     const [editId, setEditId] = useState("")
     const [btnStatus, setBtnStatus] = useState(1)
-
+    const [propertystatus, setPropertystatus] = useState("")
     const openPopup = () => setShowPopup(true);
     const closePopup = () => setShowPopup(false);
 
     const handlestatus = (e) => {
-        console.log(e.target.value)
+        console.log(e.target.value, "check value")
         if (e.target.value == 0) {
-            setBtnStatus(1)
+            setPropertystatus(1)
         } else {
-            setBtnStatus(0)
+            setPropertystatus(0)
         }
     }
 
@@ -90,6 +90,8 @@ const AmenitiesType = () => {
             })
             if (res.data.status) {
                 console.log(res.data.data.name)
+                console.log(res.data.data.status)
+                setPropertystatus(res.data.data.status)
                 setEditAmenities(res.data.data.name)
             }
         } catch (error) {
@@ -107,7 +109,7 @@ const AmenitiesType = () => {
         const payload = {
             id: editId,
             name: updateAmenities || editAmenities,
-            status: btnStatus
+            status: propertystatus
         }
         console.log(payload, "payload")
         try {
@@ -154,7 +156,7 @@ const AmenitiesType = () => {
                                 />
                                 <div className="d-flex justify-content-between">
                                     <button type="submit" className="btn ">{editId ? "Update" : "Submit"}</button>
-                                    {editId ? <button type="button" className="btn btn-primary" value={btnStatus} onClick={handlestatus} >{btnStatus == 0 ? "In Active" : "Active"}</button> : ""}
+                                    {editId ? <button type="button" className="btn btn-primary" value={propertystatus} onClick={handlestatus} >{propertystatus == 0 ? "In Active" : "Active"}</button> : ""}
                                 </div>
                             </form>
                         </div>
