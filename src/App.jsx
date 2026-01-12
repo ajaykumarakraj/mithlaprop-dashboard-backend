@@ -5,7 +5,7 @@ import Layout from "./Layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
 import PropertyList from "./pages/PropertyListPage";
-import Table from "./pages/Table/Table";
+// import Table from "./pages/Table/Table";
 import TableData from "./pages/Table/TableData";
 import PropertyListPage from "./pages/PropertyListPage";
 import PropertyDetailPage from "./pages/PropertyDetailPage";
