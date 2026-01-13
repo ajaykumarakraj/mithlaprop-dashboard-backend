@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { useParams } from "react-router-dom";
 
-const Dashboard = () => {
+const AgentPropertyList = () => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(false);
-
+ const { id,property } = useParams();
+ console.log("get id",id,property) // use for api call data
   useEffect(() => {
-    fetchUsers(currentPage);
+  fetchUsers(currentPage);
   }, [currentPage]);
 
   const fetchUsers = async (page) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `https://api.squarebigha.com/api/get-agent-list?page=${page}`,
+        `https://api.squarebigha.com/api/get-agent-property/5/residential`,
         {
           headers: {
             Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiJkMTkxNmNhNjFiNDhiYTk3YWYxOTU3N2MxNWIyZGJhMTMwNmZlZmVjNWE0YzU1ZTJmNmQyYTAyZWU5NjdjNWYwN2NjYmFhYmE2MTA3YWQyNyIsImlhdCI6MTc2NDY2NTU2OS45Mzc4NjQsIm5iZiI6MTc2NDY2NTU2OS45Mzc4NjYsImV4cCI6MTc5NjIwMTU2OS45MzMwNzMsInN1YiI6IjM1Iiwic2NvcGVzIjpbXX0.Gs8Fap_0ywj3CEvMbeePY9Z9plNklTty3YrS4k-5uqT_WQczLbHJmLE-8vVJpzktbOB0EeHL2u3hH8-p6PcyD4r4MYH5TPkExPbOfOQyNMTxcZtuoI2hnrkQVj2hz18R_WD8ztlRnvnsZxRSCG9megGRi10YrK-PJwjl-PTaSxAfvB1n6UrZ_sCm0xhtbS9SXMbdiZuF0NR4_iiI6aLi1YiuxC_uRifnCyUAFrVP4lRFZnrNQlqvyPSqZwJHgtck6uath-d_yTPA7LYu-QASbIC_KwU3nole2eyGWIHOD5aslDanvVQBAbDTDG7tVDj_cyhIYS9GYI2YJ1rX_CZghuRpq08qm9KigYXpnmhxftJURpxs2M53wev7OiETdxJkQQ2J8bmr0dNcoNzcMoTrTy0hSOz17LryyFk9rJCABZxoerwzMmq1OWTtEOk-KPDiv6L6m8u5jXSq4mD__g8edG26k6WfeSmse9xSzMoi4cHF3uo4HM7OATwzUmQT-4x2d5qfsXapajv4EsLbRT3vlJxP1LGUaDUmyC13kB-RryAGbZTRNcMXUdw_eNdZkR2uOrx_OJtRNJa5K-tftfzH6LvoHj69dJK9OiuQVkiqape2n2_-lLdp39PEKdlB43VVMnMqwkU4DUW6VZ34ojPQYJP1DJ9ppZduVKUkwtUY0E4",
@@ -26,6 +28,7 @@ const Dashboard = () => {
       );
 
       if (res.data.status === 200) {
+        console.log(res.data.data.data)
         setUsers(res.data.data.data);
         setCurrentPage(res.data.data.current_page);
         setLastPage(res.data.data.last_page);
@@ -39,37 +42,38 @@ const Dashboard = () => {
   /* ACTION HANDLERS */
   const viewProfile = (row) => alert(`View profile of ${row.name}`);
   const viewProperties = (row) => alert(`View properties of ${row.name}`);
-//   const activateUser = (row) => alert(`Activated ${row.name}`);
-  const changeUserStatus = async(id,status) =>{
-    console.log("get id",id,status)
+   //const activateUser = (row) => alert(`Activated ${row.name}`);
+  const changeUserStatus = async(id,property_type,status) =>{
+    console.log("get id",id,property_type,status)
+    const payload={
+      property_type:property_type,
+      id:id,
+      status:status
+    }
+    console.log("post payload",payload)
 try {
-    const res=await axios.get(`https://api.squarebigha.com/api/update-agent-status/${status}/${id}`,{
+    const res=await axios.post(`https://api.squarebigha.com/api/update-property-status`,payload,{
         headers:{
             Authorization:"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiJkMTkxNmNhNjFiNDhiYTk3YWYxOTU3N2MxNWIyZGJhMTMwNmZlZmVjNWE0YzU1ZTJmNmQyYTAyZWU5NjdjNWYwN2NjYmFhYmE2MTA3YWQyNyIsImlhdCI6MTc2NDY2NTU2OS45Mzc4NjQsIm5iZiI6MTc2NDY2NTU2OS45Mzc4NjYsImV4cCI6MTc5NjIwMTU2OS45MzMwNzMsInN1YiI6IjM1Iiwic2NvcGVzIjpbXX0.Gs8Fap_0ywj3CEvMbeePY9Z9plNklTty3YrS4k-5uqT_WQczLbHJmLE-8vVJpzktbOB0EeHL2u3hH8-p6PcyD4r4MYH5TPkExPbOfOQyNMTxcZtuoI2hnrkQVj2hz18R_WD8ztlRnvnsZxRSCG9megGRi10YrK-PJwjl-PTaSxAfvB1n6UrZ_sCm0xhtbS9SXMbdiZuF0NR4_iiI6aLi1YiuxC_uRifnCyUAFrVP4lRFZnrNQlqvyPSqZwJHgtck6uath-d_yTPA7LYu-QASbIC_KwU3nole2eyGWIHOD5aslDanvVQBAbDTDG7tVDj_cyhIYS9GYI2YJ1rX_CZghuRpq08qm9KigYXpnmhxftJURpxs2M53wev7OiETdxJkQQ2J8bmr0dNcoNzcMoTrTy0hSOz17LryyFk9rJCABZxoerwzMmq1OWTtEOk-KPDiv6L6m8u5jXSq4mD__g8edG26k6WfeSmse9xSzMoi4cHF3uo4HM7OATwzUmQT-4x2d5qfsXapajv4EsLbRT3vlJxP1LGUaDUmyC13kB-RryAGbZTRNcMXUdw_eNdZkR2uOrx_OJtRNJa5K-tftfzH6LvoHj69dJK9OiuQVkiqape2n2_-lLdp39PEKdlB43VVMnMqwkU4DUW6VZ34ojPQYJP1DJ9ppZduVKUkwtUY0E4"
         }
     })
     if(res.data.status==200){
         window.location.reload();
-
+ console.log("api response",res.data)
     }
-    console.log("api response",res.data.status)
+   
 } catch (error) {
     console.log(error)
 }
 
-
   }
-
-
-
 
   return (
     <div className="container-fluid mt-4">
       <div className="card shadow-sm border-0">
         <div className="card-header bg-dark text-white">
-          <h5 className="mb-0">Agent List</h5>
+          <h5 className="mb-0">Agent Property List</h5>
         </div>
-
         <div className="card-body p-0">
           <div className="table-responsive">
             <table className="table table-hover table-striped mb-0 text-center align-middle">
@@ -103,34 +107,24 @@ try {
                   users.map((u, i) => (
                     <tr key={u.id}>
                       <td>{i + 1}</td>
-                      <td className="fw-semibold">{u.name}</td>
+                      <td className="fw-semibold">{u.apartment_society}</td>
                       <td>{u.phone}</td>
-                      <td>{u.city}</td>
+                      <td>{u.property_city}</td>
                       <td>
                         <span className="badge bg-info text-dark">
                           {u.user_type}
                         </span>
                       </td>
-                      {/* <td>
-                        <span
-                          className={`badge ${
-                            u.kyc_verified === "1"
-                              ? "bg-success"
-                              : "bg-warning text-dark"
-                          }`}
-                        >
-                          {u.kyc_verified === "1" ? "Approved" : "Pending"}
-                        </span>
-                      </td> */}
+                
                       <td>
                         <span
                           className={`badge ${
-                            u.user_status === "1"
+                            u.active === "1"
                               ? "bg-success"
                               : "bg-danger"
                           }`}
                         >
-                          {u.user_status === "1" ? "Active" : "Inactive"}
+                          {u.active === "1" ? "Active" : "Inactive"}
                         </span>
                       </td>
 
@@ -157,13 +151,13 @@ try {
                                 className="dropdown-item"
                                 onClick={() => viewProperties(u)}
                               >
-                                🏢 Properties
+                                🏢View Property
                               </button>
                             </li>
                             <li>
                               <button
                                 className="dropdown-item text-success"
-                                onClick={(id) => changeUserStatus(u.id,1)}
+                                onClick={(id,property_type) => changeUserStatus(u.id,u.property_type,1)}
                               >
                                 ✅ Activate
                               </button>
@@ -171,7 +165,7 @@ try {
                             <li>
                               <button
                                 className="dropdown-item text-danger"
-                                onClick={(id) => changeUserStatus(u.id,0)}
+                                onClick={(id,property_type) => changeUserStatus(u.id,u.property_type,0)}
                               >
                                 ❌ Inactivate
                               </button>
@@ -202,7 +196,6 @@ try {
           ‹ Prev
         </button>
       </li>
-
       {/* PAGE NUMBERS */}
       {Array.from({ length: lastPage }, (_, i) => (
         <li
@@ -219,7 +212,6 @@ try {
           </button>
         </li>
       ))}
-
       {/* NEXT */}
       <li
         className={`page-item ${
@@ -244,4 +236,4 @@ try {
   );
 };
 
-export default Dashboard;
+export default AgentPropertyList;
