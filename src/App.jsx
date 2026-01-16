@@ -22,9 +22,9 @@ const App = () => {
         <Route index element={<Dashboard />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/agent" element={<AgentList />} />
-        <Route path="/agent/agent-property-list/:id/:property" element={<AgentPropertyList/>}/>
+        <Route path="/agent/agent-property-list/:id" element={<AgentPropertyList/>}/>
         <Route path="/propertylist/:id" element={<PropertyListPage />} />
-        <Route path="/detailpage/:id" element={<PropertyDetailPage />} />
+        <Route path="/detailpage/:id/:activeType" element={<PropertyDetailPage />} />
         <Route path="/amenities-type" element={<AmenitiesType />} />
         <Route path="/property-type" element={<PropertyType />} />
         <Route path="/property-sub-type" element={<PropertySubType />} />

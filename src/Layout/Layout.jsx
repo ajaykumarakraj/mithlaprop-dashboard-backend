@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
     return (
-        <div className="d-flex flex-column vh-100">
+        <div className="d-flex flex-column bgadd">
             <Header />
             <div className="d-flex flex-grow-1">
                 <Sidebar />

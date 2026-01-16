@@ -223,3 +223,70 @@ tr {
 .close-btn:hover {
     color: black;
 }
+.btn-resi{
+    background: #218838!important;
+    color: #fff !important;
+}
+.btn-outline{
+    border: 1px solid #218838 !important;
+    color: #fff !important;
+}
+.btn-out{
+      border: 1px solid #218838 !important;
+    color: #218838 !important;
+}
+.d-fle{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.price-box {
+    background: linear-gradient(135deg, #198754, #28a745);
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 12px;
+    /* margin: 22px; */
+    font-size: 17px;
+    font-weight: bold;
+    display: inline;
+    /* text-align: right; */
+}
+.price-box small {
+  display: block;
+  font-size: 13px;
+  opacity: 0.9;
+}
+.detail-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #e7e7e7;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.detail-card .icon {
+  font-size: 22px;
+  color: #375a7c;
+}
+.detail-card small {
+  color: #777;
+}
+.cardpa{
+        padding: 12px;
+}
+.bgadd{
+    background: #dedede;
+}
+.font{
+    font-size: 18px;
+}
+.text-trans{
+    text-transform: capitalize;
+}
+img, svg{
+    color: #2c7324;
+}
+.gap{
+    gap: 10px;
+}

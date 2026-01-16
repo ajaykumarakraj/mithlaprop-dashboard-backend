@@ -27,6 +27,7 @@ const navigate=useNavigate();
       );
 
       if (res.data.status === 200) {
+        console.log("agent list",res.data.data.data)
         setUsers(res.data.data.data);
         setCurrentPage(res.data.data.current_page);
         setLastPage(res.data.data.last_page);
@@ -150,7 +151,7 @@ try {
                             <li>
                               <button
                                 className="dropdown-item"
-                                onClick={() => navigate(`agent-property-list/${u.id}/${u.name}`)}
+                                onClick={() => navigate(`agent-property-list/${u.id}`)}
                               >
                                 🏢 Properties
                               </button>

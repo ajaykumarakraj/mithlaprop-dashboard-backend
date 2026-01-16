@@ -1,169 +1,305 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
-    FaArrowLeft, FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaTag,
-    FaCalendarAlt, FaHome, FaCar, FaTree, FaCompass, FaThermometerHalf, FaChair, FaIdBadge
-} from 'react-icons/fa';
-
-const properties = [
-    {
-        id: 1,
-        name: 'Ocean View Villa',
-        location: 'Malibu, CA',
-        price: '$2,000,000',
-        description: 'A luxurious villa with a stunning view of the ocean. Featuring a private pool, modern architecture, and direct beach access.',
-        size: '5000 sq ft',
-        lotSize: '10,000 sq ft',
-        bedrooms: 5,
-        bathrooms: 4,
-        yearBuilt: 2018,
-        floors: 2,
-        facing: 'South-West',
-        type: 'Villa',
-        garage: 2,
-        status: 'Available',
-        furnishing: 'Fully Furnished',
-        availability: 'Immediately',
-        listingDate: '2023-12-01',
-        ownership: 'Freehold',
-        energyRating: 'A+',
-        features: ['Pool', 'Sea View', 'Garden', 'Smart Home', 'Fireplace'],
-        images: [
-            'https://i.postimg.cc/NGJ63Dk6/The-Importance-of-High-Quality-Real-Estate-Photos-v3.webp',
-            'https://i.postimg.cc/NGJ63Dk6/The-Importance-of-High-Quality-Real-Estate-Photos-v3.webp',
-            'https://i.postimg.cc/NGJ63Dk6/The-Importance-of-High-Quality-Real-Estate-Photos-v3.webp',
-        ],
-    },
-];
+  FaArrowLeft,
+  FaTag,
+  FaHome,
+  FaBed,
+  FaBath,
+  FaChair,
+  FaRulerCombined,
+  FaIdBadge,
+  FaCity,
+  FaBuilding,
+  FaLayerGroup,
+  FaList,
+  FaMapMarkerAlt,
+  FaKey,
+  FaPhone,
+  FaRupeeSign,
+  FaUserTie,
+} from "react-icons/fa";
+import axios from "axios";
 
 const PropertyDetailPage = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const property = properties.find((prop) => prop.id === parseInt(id));
+  const { id ,activeType} = useParams();
+  const navigate = useNavigate();
 
-    if (!property) {
-        return (
-            <div className="container mt-2 text-center">
-                <h3 className="text-danger">Property not found</h3>
-                <button className="btn btn-outline-secondary mt-3" onClick={() => navigate(-1)}>
-                    <FaArrowLeft className="me-2" /> Go Back
-                </button>
-            </div>
-        );
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+const [status,setStatus]=useState("")
+const [statusId,setStatusId]=useState("")
+ const formatPrice = (amount) => {
+        if (!amount) return "0";
+
+        if (amount >= 10000000) {
+            return (amount / 10000000).toFixed(2) + " Cr";
+        } else if (amount >= 100000) {
+            return (amount / 100000).toFixed(2) + " Lakh";
+        } else if (amount >= 1000) {
+            return (amount / 1000).toFixed(2) + " K";
+        } else if (amount >= 100) {
+            return (amount / 100).toFixed(2) + " rs";
+        }
+        return amount;
+    };
+
+const propertyHighlights = property ? [
+      { icon: <FaRupeeSign />, label: "Total Price", value: formatPrice(property.total_price) },
+       { icon: <FaRupeeSign />, label: "Price", value: `${formatPrice(property.price)}/ ${property.area_unit}` },
+ 
+   {
+    icon: <FaRulerCombined />,
+    label: "Area",
+    value: property.area ? `${property.area} ${property.area_unit}` : null,
+  },
+ 
+ { icon: <FaHome />, label: "Property Type", value: property.property_type },
+
+
+  
+
+  { icon: <FaBed />, label: "Bedrooms", value: property.bedrooms },
+  { icon: <FaBath />, label: "Bathrooms", value: property.bathrooms },
+  { icon: <FaChair />, label: "Furnishing", value: property.furnishing },
+ { icon: <FaHome />, label: "BHK", value: property.bhk_type },
+ 
+//   { icon: <FaIdBadge />, label: "Property ID", value: property.id },
+ { icon: <FaHome />, label: "Other Room", value: property.other_room },
+
+  { icon: <FaUserTie />, label: "Ownership", value: property.ownership },
+   { icon: <FaLayerGroup />, label: "Balcony", value: property.balcony },
+  
+  {
+    icon: <FaList />,
+    label: "Status",
+    value: property.active === "1" ? "Active" : "Inactive",
+  },
+    { icon: <FaHome />, label: "Sub Type", value: property.property_sub_type },
+  { icon: <FaKey />, label: "Listing Type", value: property.listing_type },
+{ icon: <FaUserTie />, label: "User Type", value: property.user_type },
+  { icon: <FaCity />, label: "City", value: property.agent_city },
+  
+  { icon: <FaBuilding />, label: "Apartment", value: property.apartment_society },
+ 
+  { icon: <FaLayerGroup />, label: "Floor Allowed", value: property.floor_allowed },
+
+ 
+  { icon: <FaMapMarkerAlt />, label: "Locality", value: property.locality },
+ 
+//   { icon: <FaPhone />, label: "Phone", value: property.phone },
+
+ 
+  { icon: <FaCity />, label: "Property City", value: property.property_city },
+
+ 
+ 
+] : [];
+
+ useEffect(() => {
+  getDetails();
+  
+}, []);
+
+  const getDetails = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.squarebigha.com/api/get-agent-property-detail/${id}/${activeType}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiJkMTkxNmNhNjFiNDhiYTk3YWYxOTU3N2MxNWIyZGJhMTMwNmZlZmVjNWE0YzU1ZTJmNmQyYTAyZWU5NjdjNWYwN2NjYmFhYmE2MTA3YWQyNyIsImlhdCI6MTc2NDY2NTU2OS45Mzc4NjQsIm5iZiI6MTc2NDY2NTU2OS45Mzc4NjYsImV4cCI6MTc5NjIwMTU2OS45MzMwNzMsInN1YiI6IjM1Iiwic2NvcGVzIjpbXX0.Gs8Fap_0ywj3CEvMbeePY9Z9plNklTty3YrS4k-5uqT_WQczLbHJmLE-8vVJpzktbOB0EeHL2u3hH8-p6PcyD4r4MYH5TPkExPbOfOQyNMTxcZtuoI2hnrkQVj2hz18R_WD8ztlRnvnsZxRSCG9megGRi10YrK-PJwjl-PTaSxAfvB1n6UrZ_sCm0xhtbS9SXMbdiZuF0NR4_iiI6aLi1YiuxC_uRifnCyUAFrVP4lRFZnrNQlqvyPSqZwJHgtck6uath-d_yTPA7LYu-QASbIC_KwU3nole2eyGWIHOD5aslDanvVQBAbDTDG7tVDj_cyhIYS9GYI2YJ1rX_CZghuRpq08qm9KigYXpnmhxftJURpxs2M53wev7OiETdxJkQQ2J8bmr0dNcoNzcMoTrTy0hSOz17LryyFk9rJCABZxoerwzMmq1OWTtEOk-KPDiv6L6m8u5jXSq4mD__g8edG26k6WfeSmse9xSzMoi4cHF3uo4HM7OATwzUmQT-4x2d5qfsXapajv4EsLbRT3vlJxP1LGUaDUmyC13kB-RryAGbZTRNcMXUdw_eNdZkR2uOrx_OJtRNJa5K-tftfzH6LvoHj69dJK9OiuQVkiqape2n2_-lLdp39PEKdlB43VVMnMqwkU4DUW6VZ34ojPQYJP1DJ9ppZduVKUkwtUY0E4",
+          },
+        }
+      );
+
+      if (res.data.status === 200) {
+        setProperty(res.data.data);
+        setStatus(res.data.data.active)
+        setStatusId(res.data.data.id)
+      
+       console.log(res.data.data.id)
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
+  };
 
+// update Status 
+
+ useEffect(() => {
+  getstatus();
+  
+}, [status]);
+ const  getstatus=async()=>{
+  const payload={
+      property_type:activeType,
+      id:statusId,
+      status:status
+    }
+    console.log("post payload",payload)
+try {
+  const res=await axios.post(`https://api.squarebigha.com/api/update-property-status`,payload,{
+    headers:{
+      Authorization:"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiJkMTkxNmNhNjFiNDhiYTk3YWYxOTU3N2MxNWIyZGJhMTMwNmZlZmVjNWE0YzU1ZTJmNmQyYTAyZWU5NjdjNWYwN2NjYmFhYmE2MTA3YWQyNyIsImlhdCI6MTc2NDY2NTU2OS45Mzc4NjQsIm5iZiI6MTc2NDY2NTU2OS45Mzc4NjYsImV4cCI6MTc5NjIwMTU2OS45MzMwNzMsInN1YiI6IjM1Iiwic2NvcGVzIjpbXX0.Gs8Fap_0ywj3CEvMbeePY9Z9plNklTty3YrS4k-5uqT_WQczLbHJmLE-8vVJpzktbOB0EeHL2u3hH8-p6PcyD4r4MYH5TPkExPbOfOQyNMTxcZtuoI2hnrkQVj2hz18R_WD8ztlRnvnsZxRSCG9megGRi10YrK-PJwjl-PTaSxAfvB1n6UrZ_sCm0xhtbS9SXMbdiZuF0NR4_iiI6aLi1YiuxC_uRifnCyUAFrVP4lRFZnrNQlqvyPSqZwJHgtck6uath-d_yTPA7LYu-QASbIC_KwU3nole2eyGWIHOD5aslDanvVQBAbDTDG7tVDj_cyhIYS9GYI2YJ1rX_CZghuRpq08qm9KigYXpnmhxftJURpxs2M53wev7OiETdxJkQQ2J8bmr0dNcoNzcMoTrTy0hSOz17LryyFk9rJCABZxoerwzMmq1OWTtEOk-KPDiv6L6m8u5jXSq4mD__g8edG26k6WfeSmse9xSzMoi4cHF3uo4HM7OATwzUmQT-4x2d5qfsXapajv4EsLbRT3vlJxP1LGUaDUmyC13kB-RryAGbZTRNcMXUdw_eNdZkR2uOrx_OJtRNJa5K-tftfzH6LvoHj69dJK9OiuQVkiqape2n2_-lLdp39PEKdlB43VVMnMqwkU4DUW6VZ34ojPQYJP1DJ9ppZduVKUkwtUY0E4"
+    }
+  })
+  console.log(res.data)
+} catch (error) {
+  console.log(error)
+}
+}
+
+
+  /* ---------------- LOADING ---------------- */
+  if (loading) {
     return (
-        <div className="container mt-5 pb-4 ">
-            <div className="mb-4">
-                <button className="btn btn-outline-primary" onClick={() => navigate(-1)}>
-                    <FaArrowLeft className="me-2" /> Back to Property List
-                </button>
-            </div>
-
-            {/* Image Carousel */}
-            <div id="propertyCarousel" className="carousel slide mb-4" data-bs-ride="carousel">
-                <div className="carousel-inner rounded shadow">
-                    {property.images.map((img, index) => (
-                        <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                            <img src={img} className="d-block w-100" alt={`Slide ${index}`} style={{ maxHeight: '500px', objectFit: 'cover' }} />
-                        </div>
-                    ))}
-                </div>
-                {property.images.length > 1 && (
-                    <>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                        </button>
-                    </>
-                )}
-            </div>
-
-            {/* Main Details */}
-            <h2 className="fw-bold">{property.name}</h2>
-            <p className="text-muted">
-                <FaMapMarkerAlt className="me-2 text-primary" />
-                {property.location}
-            </p>
-            <h4 className="text-success fw-bold">
-                <FaTag className="me-2" />
-                {property.price}
-            </h4>
-
-            <p className="fs-5 mt-4">{property.description}</p>
-
-            <div className="row mt-4 g-3">
-                <div className="col-md-6 col-lg-4">
-                    <p><FaIdBadge className="me-2 text-dark" /> <strong>Property ID:</strong> {property.id}</p>
-                    <p><FaRulerCombined className="me-2 text-info" /> <strong>Area:</strong> {property.size}</p>
-                    <p><FaTree className="me-2 text-success" /> <strong>Lot Size:</strong> {property.lotSize}</p>
-                    <p><FaBed className="me-2 text-warning" /> <strong>Bedrooms:</strong> {property.bedrooms}</p>
-                </div>
-                <div className="col-md-6 col-lg-4">
-                    <p><FaBath className="me-2 text-primary" /> <strong>Bathrooms:</strong> {property.bathrooms}</p>
-                    <p><FaCar className="me-2 text-secondary" /> <strong>Garage:</strong> {property.garage} cars</p>
-                    <p><FaHome className="me-2 text-danger" /> <strong>Type:</strong> {property.type}</p>
-                    <p><FaCalendarAlt className="me-2 text-muted" /> <strong>Year Built:</strong> {property.yearBuilt}</p>
-                </div>
-                <div className="col-md-6 col-lg-4">
-                    <p><FaCompass className="me-2 text-info" /> <strong>Facing:</strong> {property.facing}</p>
-                    <p><FaThermometerHalf className="me-2 text-danger" /> <strong>Heating/Cooling:</strong> Central HVAC</p>
-                    <p><FaChair className="me-2 text-secondary" /> <strong>Furnishing:</strong> {property.furnishing}</p>
-                    <p><FaCalendarAlt className="me-2 text-muted" /> <strong>Listing Date:</strong> {property.listingDate}</p>
-                </div>
-            </div>
-
-            {/* More Info */}
-            <div className="row mt-3">
-                <div className="col-md-6">
-                    <p><strong>Status:</strong> <span className={`ms-2 badge bg-${property.status === 'Available' ? 'success' : 'secondary'}`}>{property.status}</span></p>
-                    <p><strong>Availability:</strong> {property.availability}</p>
-                    <p><strong>Ownership:</strong> {property.ownership}</p>
-                    <p><strong>Floors:</strong> {property.floors}</p>
-                    <p><strong>Energy Rating:</strong> {property.energyRating}</p>
-                </div>
-            </div>
-
-            {/* Features */}
-            <div className="mt-4">
-                <h5>Features:</h5>
-                <div className="d-flex flex-wrap gap-2">
-                    {property.features.map((feature, index) => (
-                        <span key={index} className="badge bg-light text-dark border">{feature}</span>
-                    ))}
-                </div>
-            </div>
-
-            {/* Approve / Reject Buttons */}
-            <div className="mt-5 d-flex gap-3">
-                <button
-                    className="btn btn-success"
-                    onClick={() => {
-                        alert(`Approved: ${property.name}`);
-                        // TODO: Add API call here
-                    }}
-                >
-                    ✅ Approve
-                </button>
-
-                <button
-                    className="btn btn-danger"
-                    onClick={() => {
-                        const confirmReject = window.confirm(`Are you sure you want to reject: ${property.name}?`);
-                        if (confirmReject) {
-                            alert(`Rejected: ${property.name}`);
-                            // TODO: Add API call here
-                        }
-                    }}
-                >
-                    ❌ Reject
-                </button>
-            </div>
-
-        </div>
+      <div className="container mt-5 text-center">
+        <h4>Loading property details...</h4>
+      </div>
     );
+  }
+
+  /* ---------------- NO DATA ---------------- */
+  if (!property) {
+    return (
+      <div className="container mt-5 text-center">
+        <h4 className="text-danger">Property not found</h4>
+        <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+
+   
+ console.log("status",status ,statusId)
+  return (
+    <div className="container mt-4 pb-5 ">
+      {/* BACK BUTTON */}
+     < div className="mb-3 d-flex gap">
+      <button className="btn btn-out" onClick={() => navigate(-1)}>
+        <FaArrowLeft className="me-2" />
+        Back
+      </button>
+      <div className="btn-group ">
+    <button
+      className={`btn btn-sm p-2 ${
+        status == 1
+          ? "btn-resi"
+          : "btn-out"
+      }`}
+      onClick={() => setStatus(1)}
+    >
+      active
+    </button>
+  <button
+      className={`btn btn-sm ${
+        status == 0
+          ? "bg-danger text-white"
+          : "btn-out "
+      }`}
+      onClick={() => setStatus(0)}
+    >
+      Inactive
+    </button>
+  </div>
+</div>
+      {/* IMAGE  */}
+  <div className="imagelist">
+<div className="row">
+  {property?.media?.length > 0 ? (
+    property.media.map((img, index) => (
+      <div className="col-md-4 mb-3" key={index}>
+        <img
+          src={`https://api.squarebigha.com/${img.file_url}`}
+          alt={`property-${index}`}
+          className="img-fluid rounded shadow-sm"
+          style={{ height: "220px", objectFit: "cover", width: "100%" }}
+        />
+      </div>
+    ))
+  ) : (
+    <p>No images available</p>
+  )}
+</div>
+
+  </div>
+      {/* <div className="card">
+  <div className="text-trans">
+    <h2 className="fw-bold">{property.apartment_society}</h2>
+  <h2 className="font ">
+  
+  { `${property.bhk_type==null?"":property.bhk_type} ${property.area}${property.area_unit}  ${property.apartment_society}   in ${property.locality}`}
+    </h2>
+  </div>
+
+  <div className="price-box">
+    ₹ {formatPrice(property.total_price)}
+
+  </div>
+</div> */}
+   <div className="card cardpa">
+<h2 className="font mt-4">Property Information</h2>
+   <div className="row g-3 ">
+
+  {propertyHighlights
+    .filter(item => item.value)
+    .map((item, i) => (
+      <div className="col-md-3 col-sm-6" key={i}>
+        <div className="detail-card d-flex align-items-center gap-3">
+          <div className="icon fs-4 text-primary">
+            {item.icon}
+          </div>
+          <div>
+            <small className="text-muted">{item.label}</small>
+            <h6 className="mb-0 text-trans">{item.value}</h6>
+          </div>
+        </div>
+      </div>
+    ))}
+</div>
+
+</div>
+
+  {property.description && (
+  <div className="card mt-4 shadow-sm">
+    <div className="card-body">
+      <h5>Description</h5>
+      <p className="text-muted">{property.description}</p>
+    </div>
+  </div>
+)}
+
+{property.aminity?.length > 0 && (
+  <div className="card mt-4 shadow-sm">
+    <div className="card-body">
+      <h5>Amenities</h5>
+      <div className="d-flex flex-wrap gap-2">
+        {property.aminity.map(a => (
+          <span key={a.id} className="badge rounded-pill bg-light text-dark border">
+            {a.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+      {/* AGENT INFO */}
+      <div className="card mt-4 shadow-sm border-0">
+  <div className="card-body">
+    <h5>Agent Details</h5>
+    <p><strong>Type:</strong> {property.user_type}</p>
+    <p><strong>Phone:</strong> {property.phone}</p>
+  </div>
+</div>
+
+    </div>
+  );
 };
 
 export default PropertyDetailPage;

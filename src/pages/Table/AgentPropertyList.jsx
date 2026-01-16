@@ -2,24 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 
 const AgentPropertyList = () => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(false);
- const { id,property } = useParams();
- console.log("get id",id,property) // use for api call data
+  const [activeType, setActiveType] = useState("residential");
+
+  const navigate=useNavigate()
+ const { id} = useParams();
+ console.log("get id",id) // use for api call data
   useEffect(() => {
   fetchUsers(currentPage);
-  }, [currentPage]);
-
+  }, [currentPage,activeType]);
+console.log(activeType) 
   const fetchUsers = async (page) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `https://api.squarebigha.com/api/get-agent-property/5/residential`,
+        `https://api.squarebigha.com/api/get-agent-property/${id}/${activeType}?page=${page}`,
         {
           headers: {
             Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTk5MjgxNi1kZDUxLTcyMDEtYWY5MC1iNTZiYmNiMGVmNDEiLCJqdGkiOiJkMTkxNmNhNjFiNDhiYTk3YWYxOTU3N2MxNWIyZGJhMTMwNmZlZmVjNWE0YzU1ZTJmNmQyYTAyZWU5NjdjNWYwN2NjYmFhYmE2MTA3YWQyNyIsImlhdCI6MTc2NDY2NTU2OS45Mzc4NjQsIm5iZiI6MTc2NDY2NTU2OS45Mzc4NjYsImV4cCI6MTc5NjIwMTU2OS45MzMwNzMsInN1YiI6IjM1Iiwic2NvcGVzIjpbXX0.Gs8Fap_0ywj3CEvMbeePY9Z9plNklTty3YrS4k-5uqT_WQczLbHJmLE-8vVJpzktbOB0EeHL2u3hH8-p6PcyD4r4MYH5TPkExPbOfOQyNMTxcZtuoI2hnrkQVj2hz18R_WD8ztlRnvnsZxRSCG9megGRi10YrK-PJwjl-PTaSxAfvB1n6UrZ_sCm0xhtbS9SXMbdiZuF0NR4_iiI6aLi1YiuxC_uRifnCyUAFrVP4lRFZnrNQlqvyPSqZwJHgtck6uath-d_yTPA7LYu-QASbIC_KwU3nole2eyGWIHOD5aslDanvVQBAbDTDG7tVDj_cyhIYS9GYI2YJ1rX_CZghuRpq08qm9KigYXpnmhxftJURpxs2M53wev7OiETdxJkQQ2J8bmr0dNcoNzcMoTrTy0hSOz17LryyFk9rJCABZxoerwzMmq1OWTtEOk-KPDiv6L6m8u5jXSq4mD__g8edG26k6WfeSmse9xSzMoi4cHF3uo4HM7OATwzUmQT-4x2d5qfsXapajv4EsLbRT3vlJxP1LGUaDUmyC13kB-RryAGbZTRNcMXUdw_eNdZkR2uOrx_OJtRNJa5K-tftfzH6LvoHj69dJK9OiuQVkiqape2n2_-lLdp39PEKdlB43VVMnMqwkU4DUW6VZ34ojPQYJP1DJ9ppZduVKUkwtUY0E4",
@@ -41,7 +44,7 @@ const AgentPropertyList = () => {
 
   /* ACTION HANDLERS */
   const viewProfile = (row) => alert(`View profile of ${row.name}`);
-  const viewProperties = (row) => alert(`View properties of ${row.name}`);
+  // const viewProperties = (row) => alert(`View properties of ${row.name}`);
    //const activateUser = (row) => alert(`Activated ${row.name}`);
   const changeUserStatus = async(id,property_type,status) =>{
     console.log("get id",id,property_type,status)
@@ -59,7 +62,7 @@ try {
     })
     if(res.data.status==200){
         window.location.reload();
- console.log("api response",res.data)
+//  console.log("api response",res.data)
     }
    
 } catch (error) {
@@ -71,8 +74,31 @@ try {
   return (
     <div className="container-fluid mt-4">
       <div className="card shadow-sm border-0">
-        <div className="card-header bg-dark text-white">
-          <h5 className="mb-0">Agent Property List</h5>
+        <div className="card-header bg-dark text-white d-fle">
+          <h5 className="mb-0">Agent Property List   </h5>
+            <div className="btn-group">
+    <button
+      className={`btn btn-sm ${
+        activeType === "residential"
+          ? "btn-resi"
+          : "btn-outline"
+      }`}
+      onClick={() => setActiveType("residential")}
+    >
+      Residential
+    </button>
+
+    <button
+      className={`btn btn-sm ${
+        activeType === "commercial"
+          ? "btn-resi"
+          : "btn-outline"
+      }`}
+      onClick={() => setActiveType("commercial")}
+    >
+      Commercial
+    </button>
+  </div>
         </div>
         <div className="card-body p-0">
           <div className="table-responsive">
@@ -149,7 +175,7 @@ try {
                             <li>
                               <button
                                 className="dropdown-item"
-                                onClick={() => viewProperties(u)}
+                                onClick={() => navigate(`/detailpage/${u.id}/${activeType}`)}
                               >
                                 🏢View Property
                               </button>

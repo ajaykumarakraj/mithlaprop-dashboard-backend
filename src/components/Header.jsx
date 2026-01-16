@@ -1,13 +1,13 @@
 // src/components/Header.js
 import React from "react";
-
+import img from "../assets/images/logo.png"
 const Header = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm py-1">
       <div className="container-fluid d-flex justify-content-between align-items-center">
         {/* Logo/Title */}
 
-        <span className="navbar-brand h3 mb-0"> <img src="./logo.png" height={50} /> CRM Dashboard</span>
+        <span className="navbar-brand h3 mb-0"> <img src={img} height={50} /> CRM Dashboard</span>
 
         {/* Right Section */}
         <div className="d-flex align-items-center gap-3 text-white">
